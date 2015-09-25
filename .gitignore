@@ -1,0 +1,12 @@
+README
+Makefile
+Makefile.old
+MYMETA.*
+blib/
+pm_to_blib
+MANIFEST.bak
+Radio-RTLSDR-*.tar.gz
+RTLSDR.c
+RTLSDR.o
+RTLSDR.bs
+perl_math_int64.o
