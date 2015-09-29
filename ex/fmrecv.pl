@@ -13,17 +13,20 @@ $freq *= 1_000_000;
 
 
 my $rf_sample_rate = 2_000_000;
-my $audio_sample_rate = 48_000;
+my $audio_sample_rate = 50_000;
 
 
-my $h = Radio::RTLSDR->new(freq => $freq, sample_rate => $rf_sample_rate);
+my $radio = Radio::RTLSDR->new(freq => $freq, sample_rate => $rf_sample_rate);
 
 
-open(my $fh, '|-:raw', "play -t raw -r 48k -e float -b 32 -c 1 -q -")
+#open(my $audio_sink, '|-:raw', "play -t raw -r $audio_sample_rate -e float -b 32 -c 1 -")
+open(my $audio_sink, '|-:raw', "pacat --stream-name fmrecv --format float32le --rate $audio_sample_rate --channels 1 --latency-msec 10")
   || die "couldn't run play (install sox): $!";
 
 
-$h->rx(sub {
+$radio->rx(sub {
+  ## Prepare data
+
   my $data = pdl()->convert(byte)->reshape(length($_[0]));
 
   ${ $data->get_dataref } = $_[0];
@@ -34,18 +37,14 @@ $h->rx(sub {
   $data -= 128;
   $data *= 1000000;
 
-
   my $I = $data->slice([0,-1,2]);
   my $Q = $data->slice([1,-1,2]);
 
 
-  ## LPF
+  ## Decimate 4:1, 2000k -> 500k
 
-  $I = PDL::DSP::Fir::Simple::filter($I, { fc => 0.05, N => 32 });
-  $Q = PDL::DSP::Fir::Simple::filter($Q, { fc => 0.05, N => 32 });
-
-
-  ## Decimate 4:1
+  $I = PDL::DSP::Fir::Simple::filter($I, { fc => 0.12, N => 81, });
+  $Q = PDL::DSP::Fir::Simple::filter($Q, { fc => 0.12, N => 81, });
 
   $I = $I->slice([0,-1,4]);
   $Q = $Q->slice([0,-1,4]);
@@ -53,32 +52,22 @@ $h->rx(sub {
 
   ## Demod
 
-  my $aI = $I->slice([0, -2]);
-  my $aQ = $Q->slice([0, -2]);
+  my $prev = $I->slice([0, -2]) + (i * $Q->slice([0, -2]));
+  my $curr = $I->slice([1, -1]) + (i * $Q->slice([1, -1]));
 
-  my $bI = $I->slice([1, -1]);
-  my $bQ = $Q->slice([1, -1]);
+  my $deriv = ($prev->Cconj() * $curr)->Carg();
 
-  my $a = $aI + (i * $aQ);
-  my $b = $bI + (i * $bQ);
-  my $angle = $a->Cconj() * $b;
-  $angle = $angle->Carg();
-
-  $angle = $angle->append(pdl(0)); ## FIXME: retain previous values
+  $deriv = $deriv->append($deriv->at(-1)); ## FIXME: retain previous values
 
 
-  ## Decimate 10:1, then 25:24, then LPF
+  ## Decimate 10:1, 500k -> 50k
 
-  $angle = PDL::DSP::Fir::Simple::filter($angle, { fc => 0.04, N => 32 });
+  my $audio = PDL::DSP::Fir::Simple::filter($deriv, { fc => 0.4, N => 32 });
 
-  $angle = $angle->slice([0,-1,10]);
+  $audio = $audio->slice([0,-1,10]);
 
-  $angle = $angle->reshape(25,$angle->getdim(0) / 25)->slice([0,-2],[0,-1])->flat;
-
-  my $output = $angle->convert(float);
-
-  print $fh ${ $output->get_dataref };
+  print $audio_sink ${ $audio->convert(float)->get_dataref };
 });
 
 
-$h->run;
+$radio->run;
