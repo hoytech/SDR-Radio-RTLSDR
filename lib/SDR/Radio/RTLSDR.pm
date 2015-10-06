@@ -32,14 +32,6 @@ sub new {
     };
   }
 
-  if (exists $args{freq}) {
-    _set_freq($self->{ctx}, $args{freq});
-  }
-
-  if (exists $args{sample_rate}) {
-    _set_sample_rate($self->{ctx}, $args{sample_rate});
-  }
-
   return $self;
 }
 
@@ -64,6 +56,23 @@ sub rx {
   };
 
   _start_rx($self->{ctx});
+}
+
+
+sub frequency {
+  my ($self, $freq) = @_;
+
+  die "getter not implemented yet" if !defined $freq;
+
+  _set_freq($self->{ctx}, $freq);
+}
+
+sub sample_rate {
+  my ($self, $sample_rate) = @_;
+
+  die "getter not implemented yet" if !defined $sample_rate;
+
+  _set_sample_rate($self->{ctx}, $sample_rate);
 }
 
 
