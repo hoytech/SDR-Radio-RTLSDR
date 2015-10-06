@@ -1,1 +1,1 @@
-lib/Radio/RTLSDR.pm
+lib/SDR/Radio/RTLSDR.pm

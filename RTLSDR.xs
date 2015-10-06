@@ -63,7 +63,7 @@ static void *read_thread_function(void *void_ctx) {
 
 
 
-MODULE = Radio::RTLSDR         PACKAGE = Radio::RTLSDR
+MODULE = SDR::Radio::RTLSDR         PACKAGE = SDR::Radio::RTLSDR
 PROTOTYPES: ENABLE
 
 

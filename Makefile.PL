@@ -3,8 +3,8 @@ use strict;
 use ExtUtils::MakeMaker;
 
 my %args = (
-    NAME => 'Radio::RTLSDR',
-    VERSION_FROM => 'lib/Radio/RTLSDR.pm',
+    NAME => 'SDR::Radio::RTLSDR',
+    VERSION_FROM => 'lib/SDR/Radio/RTLSDR.pm',
     PREREQ_PM => {
       'common::sense' => 0,
       'AnyEvent' => 0,
@@ -19,8 +19,8 @@ my %args = (
     },
     META_MERGE => {
       resources => {
-        repository => 'git://github.com/hoytech/Radio-RTLSDR.git',
-        bugtracker => 'https://github.com/hoytech/Radio-RTLSDR/issues',
+        repository => 'git://github.com/hoytech/SDR-Radio-RTLSDR.git',
+        bugtracker => 'https://github.com/hoytech/SDR-Radio-RTLSDR/issues',
       },
     },
 );

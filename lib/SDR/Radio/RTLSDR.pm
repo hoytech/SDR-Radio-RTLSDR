@@ -1,9 +1,9 @@
-package Radio::RTLSDR;
+package SDR::Radio::RTLSDR;
 
 our $VERSION = '0.100';
 
 require XSLoader;
-XSLoader::load('Radio::RTLSDR', $VERSION);
+XSLoader::load('SDR::Radio::RTLSDR', $VERSION);
 
 use common::sense;
 use AnyEvent;
@@ -44,7 +44,7 @@ sub new {
 }
 
 sub tx {
-  die "Radio::RTLSDR does not support transmitting";
+  die "SDR::Radio::RTLSDR does not support transmitting";
 }
 
 sub rx {
@@ -118,28 +118,28 @@ __END__
 
 =head1 NAME
 
-Radio::RTLSDR - Control RTL software defined radio devices
+SDR::Radio::RTLSDR - Control RTL software defined radio devices
 
 =head1 SYNOPSIS
 
-    my $h = Radio::RTLSDR->new(
-              freq => 104_500_000,
-              sample_rate => 1_000_000,
-            );
+    my $radio = SDR::Radio::RTLSDR->new;
 
-    $h->rx(sub {
-        my $buffer = shift;
+    $radio->frequency(104_500_000);
+    $radio->sample_rate(1_000_000);
 
-        ## Do stuff with buffer
+    $radio->rx(sub {
+      my $buffer = shift;
+
+      ## Do stuff with buffer
     });
 
-    $h->run;
+    $radio->run;
 
 =head1 DESCRIPTION
 
 =head1 SEE ALSO
 
-L<Radio-RTLSDR github repo|https://github.com/hoytech/Radio-RTLSDR>
+L<SDR-Radio-RTLSDR github repo|https://github.com/hoytech/SDR-Radio-RTLSDR>
 
 =head1 AUTHOR
 
