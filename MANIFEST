@@ -1,3 +1,7 @@
 Changes
+lib/SDR/Radio/RTLSDR.pm
 Makefile.PL
 MANIFEST
+perl_math_int64.c
+perl_math_int64.h
+typemap

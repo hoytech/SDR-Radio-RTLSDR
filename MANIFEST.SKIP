@@ -1,0 +1,15 @@
+MANIFEST.bak
+MANIFEST.SKIP
+Makefile.old
+Makefile$
+README.pod
+.gitignore
+.git/
+blib/
+pm_to_blib
+MYMETA.*
+SDR-Radio-RTLSDR.*tar[.]gz$
+perl_math_int64.o
+RTLSDR.c
+RTLSDR.o
+RTLSDR.xs
