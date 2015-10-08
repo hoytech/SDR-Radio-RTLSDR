@@ -137,18 +137,28 @@ SDR::Radio::RTLSDR - Control RTL software defined radio devices
     $radio->sample_rate(1_000_000);
 
     $radio->rx(sub {
-      my $buffer = shift;
-
-      ## Do stuff with buffer
+        ## Process data in $_[0]
     });
 
     $radio->run;
 
 =head1 DESCRIPTION
 
+This is the L<SDR> driver for L<RTL-SDR|http://sdr.osmocom.org/trac/wiki/rtl-sdr> devices.
+
+Although you can use it by itself, see the L<SDR> docs for more generic usage.
+
+In order to install this module you will need C<librtlsdr> installed. On Ubuntu/Debian you can run:
+
+    sudo apt-get install librtlsdr-dev
+
+NOTE: This module creates background threads so you should not fork after creating C<SDR::Radio::RTLSDR> objects.
+
 =head1 SEE ALSO
 
 L<SDR-Radio-RTLSDR github repo|https://github.com/hoytech/SDR-Radio-RTLSDR>
+
+L<SDR> - The main module, includes examples
 
 =head1 AUTHOR
 
